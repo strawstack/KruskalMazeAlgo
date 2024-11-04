@@ -1,0 +1,21 @@
+:root {
+    --canvas-width: 0px;
+    --canvas-height: 0px;
+}
+
+html, body {
+    padding: 0px;
+    margin: 0px;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    width: var(--canvas-width);
+    height: var(--canvas-height);
+}
