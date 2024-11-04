@@ -12,8 +12,9 @@
         type, // ROOM, WALL, or POST
         dir, // for walls HORZ or VERT
         unionFind,
-        kruskal
-    } = helper();
+        kruskal,
+        saveImg
+    } = helper(canvas);
 
     const {
         COLS,
@@ -39,7 +40,7 @@
         canvas.height = HEIGHT;
 
         const openWalls = kruskal(Object.values(grid.walls), unionFind(Object.keys(grid.rooms)));
-        
+
         // Draw
         ROWS.forEach((h, y) => {
             COLS.forEach((w, x) => {
@@ -49,7 +50,7 @@
             });
         });
 
-        
+        // saveImg();
 
     }
 

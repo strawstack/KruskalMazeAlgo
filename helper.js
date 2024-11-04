@@ -1,4 +1,4 @@
-const helper = () => {
+const helper = (canvas) => {
 
     const type = {
         POST: 0,
@@ -94,10 +94,10 @@ const helper = () => {
                         dir: direction,
                         rooms: adj_index.map(i => {
                             const {x: dx, y: dy} = adj[i];
-                            return {x: dx + x, y: dy + y}; 
+                            return {x: dx + x, y: dy + y};
                         }).map(({x, y}) => {
                             const b = inBounds(ROWS.length, COLS.length, x, y);
-                            return b ? hash(x, y) : null; 
+                            return b ? hash(x, y) : null;
                         })
                     };
                 } else { // area_type === type.ROOM
@@ -126,7 +126,7 @@ const helper = () => {
         function union(a, b) {
             const ga = find(a);
             const gb = find(b);
-            group[gb] = ga; 
+            group[gb] = ga;
         }
 
         function find(a) {
@@ -161,11 +161,18 @@ const helper = () => {
     function shuffle(arr) {
         let ci = arr.length;
         while (ci != 0) {
-          let ri = Math.floor(Math.random() * ci);
-          ci -= 1;
-          [arr[ci], arr[ri]] = [arr[ri], arr[ci]];
+            let ri = Math.floor(Math.random() * ci);
+            ci -= 1;
+            [arr[ci], arr[ri]] = [arr[ri], arr[ci]];
         }
-      }
+    }
+
+    function saveImg() {
+        const dataURL = canvas.toDataURL("image/png");
+        const img = document.createElement("img");
+        img.src = dataURL;
+        document.body.appendChild(img);
+    }
 
     return {
         resize,
@@ -177,6 +184,7 @@ const helper = () => {
         type,
         dir,
         unionFind,
-        kruskal
+        kruskal,
+        saveImg
     }
 };
