@@ -70,8 +70,9 @@ const helper = () => {
         return x >= 0 && x < num_cols && y >= 0 && y < num_rows;
     }
 
+    const hash = (x, y) => `${x}:${y}`;
+
     function getAreas(ROWS, COLS) {
-        const hash = (x, y) => `${x}:${y}`;
         const adj = [{x: 0, y: -1},{x: 1, y: 0},{x: 0, y: 1},{x: -1, y: 0}];
         const rooms = {};
         const walls = {};
@@ -86,7 +87,9 @@ const helper = () => {
                 } else if (area_type === type.WALL) {
                     const direction = (y % 2 === 1) ? dir.HORZ : dir.VERT;
                     const adj_index = (direction === dir.HORZ) ? [0, 2] : [1, 3];
-                    walls[hash(x, y)] = {
+                    const wid = hash(x, y);
+                    walls[wid] = {
+                        id: wid,
                         type: type.WALL,
                         dir: direction,
                         rooms: adj_index.map(i => {
@@ -98,7 +101,9 @@ const helper = () => {
                         })
                     };
                 } else { // area_type === type.ROOM
-                    rooms[hash(x, y)] = {
+                    const rid = hash(x, y);
+                    rooms[rid] = {
+                        id: rid,
                         type: type.ROOM,
                         walls: adj.map(({x: dx, y: dy}) => {return {x: dx + x, y: dy + y}})
                             .map(({x, y}) => inBounds(ROWS.length, COLS.length, x, y) ? hash(x, y) : null)
@@ -116,13 +121,21 @@ const helper = () => {
     function unionFind(rooms) {
 
         const group = {};
+        rooms.forEach(rid => group[rid] = rid);
 
         function union(a, b) {
-
+            const ga = find(a);
+            const gb = find(b);
+            group[gb] = ga; 
         }
 
         function find(a) {
-
+            let ga = a;
+            while(ga !== group[ga]) {
+                ga = group[ga];
+            }
+            group[a] = ga;
+            return ga;
         }
 
         return {
@@ -132,15 +145,35 @@ const helper = () => {
     }
 
     function kruskal(walls, {union, find}) {
-
+        shuffle(walls);
+        const openWalls = [];
+        walls.forEach(({ id, rooms: [ rid_one, rid_two ] }) => {
+            const group_rid_one = find(rid_one);
+            const group_rid_two = find(rid_two);
+            if (group_rid_one !== group_rid_two) {
+                union(group_rid_one, group_rid_two);
+                openWalls.push(id);
+            }
+        });
+        return openWalls;
     }
+
+    function shuffle(arr) {
+        let ci = arr.length;
+        while (ci != 0) {
+          let ri = Math.floor(Math.random() * ci);
+          ci -= 1;
+          [arr[ci], arr[ri]] = [arr[ri], arr[ci]];
+        }
+      }
 
     return {
         resize,
         prefix,
         sizes,
-        getAreas,
         getType,
+        getAreas,
+        hash,
         type,
         dir,
         unionFind,

@@ -8,6 +8,7 @@
         sizes,
         getType,
         getAreas,
+        hash,
         type, // ROOM, WALL, or POST
         dir, // for walls HORZ or VERT
         unionFind,
@@ -37,15 +38,16 @@
         canvas.width = WIDTH;
         canvas.height = HEIGHT;
 
+        const openWalls = kruskal(Object.values(grid.walls), unionFind(Object.keys(grid.rooms)));
+        
         // Draw
         ROWS.forEach((h, y) => {
             COLS.forEach((w, x) => {
                 ctx.fillStyle = colourLookup[getType(x, y)];
+                if (openWalls.includes(hash(x, y))) ctx.fillStyle = colourLookup[type.ROOM];
                 ctx.fillRect(COLS_PRE[x], ROWS_PRE[y], COLS[x], ROWS[y]);
             });
         });
-
-        const openWalls = kruskal(Object.keys(grid.walls), unionFind(Object.keys(grid.rooms)));
 
         
 
