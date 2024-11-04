@@ -113,6 +113,28 @@ const helper = () => {
         }
     }
 
+    function unionFind(rooms) {
+
+        const group = {};
+
+        function union(a, b) {
+
+        }
+
+        function find(a) {
+
+        }
+
+        return {
+            union,
+            find
+        };
+    }
+
+    function kruskal(walls, {union, find}) {
+
+    }
+
     return {
         resize,
         prefix,
@@ -120,6 +142,8 @@ const helper = () => {
         getAreas,
         getType,
         type,
-        dir
+        dir,
+        unionFind,
+        kruskal
     }
 };

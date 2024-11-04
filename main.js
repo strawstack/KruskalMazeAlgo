@@ -10,6 +10,8 @@
         getAreas,
         type, // ROOM, WALL, or POST
         dir, // for walls HORZ or VERT
+        unionFind,
+        kruskal
     } = helper();
 
     const {
@@ -43,7 +45,9 @@
             });
         });
 
-        console.log(grid);
+        const openWalls = kruskal(Object.keys(grid.walls), unionFind(Object.keys(grid.rooms)));
+
+        
 
     }
 
