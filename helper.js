@@ -1,5 +1,9 @@
 const helper = (canvas) => {
 
+    const COLS = 79;
+    const ROWS = 45;
+    const BASE_SIZE = 16;
+
     const type = {
         POST: 0,
         ROOM: 1,
@@ -29,6 +33,19 @@ const helper = (canvas) => {
         return lst.map((_, i) => condition(i) ? trueValue : falseValue);
     }
 
+    function bigrooms(lst) {
+        const expand = shuffle(Array(ROWS).fill(0).map((_, i) => i).filter(i => (i % 2) === 0)).slice(0, 5);
+        const shrink = shuffle(Array(ROWS).fill(0).map((_, i) => i).filter(i => (i % 2) === 0 && !expand.includes(i))).slice(0, 10);
+
+        const EXPAND_SIZE = 48;
+        const SHRINK_SIZE = 16;
+
+        lst = lst.map((v, i) => expand.includes(i) ? EXPAND_SIZE : v);
+        lst = lst.map((v, i) => shrink.includes(i) ? SHRINK_SIZE : v);
+
+        return lst;
+    }
+
     function prefix(lst) {
         const rtn = [0];
         lst.forEach((v, i) => {
@@ -39,9 +56,6 @@ const helper = (canvas) => {
     }
 
     function sizes() {
-        const COLS = 79;
-        const ROWS = 45;
-        const BASE_SIZE = 16;
         const WIDTH = COLS * BASE_SIZE  + BASE_SIZE / 2;
         const HEIGHT = ROWS * BASE_SIZE  + BASE_SIZE / 2;
 
@@ -49,8 +63,8 @@ const helper = (canvas) => {
         setCSSVar("--canvas-height", `${HEIGHT}px`);
 
         return {
-            COLS: resize(Array(COLS).fill(BASE_SIZE), 8, r => r % 2 === 1, 24),
-            ROWS: resize(Array(ROWS).fill(BASE_SIZE), 8, r => r % 2 === 1, 24),
+            COLS: bigrooms(resize(Array(COLS).fill(BASE_SIZE), 8, r => r % 2 === 1, 24)),
+            ROWS: bigrooms(resize(Array(ROWS).fill(BASE_SIZE), 8, r => r % 2 === 1, 24)),
             WIDTH,
             HEIGHT
         };
@@ -165,6 +179,7 @@ const helper = (canvas) => {
             ci -= 1;
             [arr[ci], arr[ri]] = [arr[ri], arr[ci]];
         }
+        return arr;
     }
 
     function saveImg() {
